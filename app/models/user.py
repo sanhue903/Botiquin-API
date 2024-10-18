@@ -8,6 +8,8 @@ from app.extensions import db
 class Role(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(db.String(50), nullable=False, unique=True)
+
+    users: Mapped[List['User']] = db.relationship(secondary='user_roles', backref='roles')
     
     def __init__(self, name):
         self.name = name
@@ -17,7 +19,7 @@ class User(db.Model):
     email:      Mapped[str] = mapped_column(db.String(50), unique=True)
     password:   Mapped[str] = mapped_column(nullable=False)
     
-    role: Mapped[List[Role]] = db.relationship(secondary='user_roles', backref='users')
+    role: Mapped[int] = mapped_column(db.Integer, ForeignKey('role.id'))
     
     #aules: Mapped[List['Aule']] = db.relationship(backref='user', lazy=True)
     
@@ -32,12 +34,10 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-
-
-class UserRole(db.Model):
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('user.id'), primary_key=True)
-    role_id: Mapped[int] = mapped_column(ForeignKey('role.id'), primary_key=True)
+    def has_role(self, role):
+        return bool(
+            db.session.scalar(
+                db.select(Role).where(Role.id == self.role).where(Role.name == role)
+            )
+        )
     
-    def __init__(self, user_id, role_id):
-        self.user_id = user_id
-        self.role_id = role_id

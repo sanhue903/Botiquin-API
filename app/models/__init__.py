@@ -1,8 +1,13 @@
-from .aule import Aule
-from .user import User
-from .mobile.student import Student
-from .mobile.chapter import Chapter
-from .mobile.question import Question
-from .mobile.application import Application
-from .mobile.score import Score 
-from .aule_student_relationship import AuleStudentRelationship
+from .application import Application, Chapter, Question
+from .student import Student, Score
+from .user import User, Role
+
+__all__ = [
+    'Application',
+    'Chapter',
+    'Question',
+    'Student',
+    'Score',
+    'User',
+    'Role'
+]
