@@ -1,5 +1,13 @@
+import uuid
 from app.models import User
 from app.extensions import db
+
+def check_user_role(user_id: uuid.UUID, role: str) -> bool:
+    return bool(
+        db.session.scalar(
+            db.select(User).where(User.role == role)
+        )
+    )
 
 def check_id(type, id) -> bool:
     try:

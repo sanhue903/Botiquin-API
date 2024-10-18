@@ -34,10 +34,3 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.password, password)
     
-    def has_role(self, role):
-        return bool(
-            db.session.scalar(
-                db.select(Role).where(Role.id == self.role).where(Role.name == role)
-            )
-        )
-    
