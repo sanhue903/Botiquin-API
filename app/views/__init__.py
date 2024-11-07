@@ -1,9 +1,10 @@
-from .student_views import student_get_view, student_post_view
-from .score_views import get_score_view, post_score_view
+from .auth_view import sign_up_view, log_in_view
+from .mobile_app_view import register_mobile_app_view
+from .student_view import get_students_view
 
 __all__ = [
-    'student_get_view',
-    'student_post_view',
-    'get_score_view',
-    'post_score_view'
+    'sign_up_view',
+    'log_in_view',
+    'register_mobile_app_view',
+    'get_students_view'
 ]

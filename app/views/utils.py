@@ -1,5 +1,6 @@
-from flask import request
 from app.extensions import db
+
+from flask import request
 
 def filter_query(query, model_type, filter : str):
     equal = request.args.get(filter, None, type=int)

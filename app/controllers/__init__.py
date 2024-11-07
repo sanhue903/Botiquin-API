@@ -1,11 +1,7 @@
-from .application_controller import bp as application_controller
-from .auth_controller import bp as auth_controller
-from .score_controller import bp as score_controller
-from .student_controller import bp as student_controller
+from .auth_controller import bp as auth_bp
+from .mobile_app_controller import bp as mobile_app_bp
 
 __all__ = [
-    'application_controller',
-    'auth_controller',
-    'score_controller',
-    'student_controller'
-]
+    'auth_bp',
+    'mobile_app_bp'
+    ]

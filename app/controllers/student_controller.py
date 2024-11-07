@@ -1,30 +1,34 @@
-from flask import Blueprint, jsonify
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from app.models import User, Application
+from app.views import get_students_view, post_student_view
+from app.schemas import StudentSchema
 
-from app.models import Application
-from app.controllers.utils import check_id, check_user
-from app.views import student_get_view, student_post_view
+from .utils import get_object, validate_role, validate_data
 
-bp = Blueprint('students', __name__)
+from flask import Blueprint
+from flask_jwt_extended import jwt_required,get_jwt_identity
 
-@bp.route('/<student_id>',methods=['GET'])
+bp = Blueprint('student', __name__)
+
+@bp.route('/<student_id>', methods=['GET'])
 @jwt_required(locations=['headers'])
-def get_students(app_id: str, student_id: int | None):
-    if not check_id(Application, app_id):
-        return jsonify({'message': 'App not found'}), 404
+def get_students(app_id: str,student_id: int | None):
+    user = get_object(User, get_jwt_identity(), "Usuario no encontrado")
     
-    if not check_user(get_jwt_identity()):
-        return jsonify({'message': 'User not found'}), 404
+    validate_role(user, "default")
+    
+    app = get_object(Application, app_id, "Aplicación no encontrada")
+    
+    return get_students_view(app.id, student_id)
 
-    return student_get_view(app_id, student_id)
-
-@bp.route('',methods=['POST'])
+@bp.route('', methods=['POST'])
 @jwt_required(locations=['headers'])
-def post_students(app_id: str):
-    if not check_id(Application, app_id):
-        return jsonify({'message': 'App not found'}), 404
+def post_student(app_id: str):
+    user = get_object(User, get_jwt_identity(), "Usuario no encontrado")
+
+    validate_role(user, "app")
+
+    app = get_object(Application, app_id, "Aplicación no encontrada")
+
+    validate_data(StudentSchema())
     
-    if get_jwt_identity() != app_id:
-        return jsonify({'message': 'Unauthorized'}), 403
-    
-    return student_post_view(app_id)
+    return post_student_view(app.id)

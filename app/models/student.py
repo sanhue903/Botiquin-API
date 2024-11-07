@@ -1,5 +1,6 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
+
 from typing import List
 import datetime
 
@@ -10,21 +11,23 @@ class Score(db.Model):
     answer: Mapped[str] = mapped_column(default='')
     seconds: Mapped[float] = mapped_column(default=0.0)
     is_correct: Mapped[bool] = mapped_column(default=False)
-    date: Mapped[datetime.datetime] = mapped_column(db.DateTime(timezone=True), server_default=functions.now())
+    date: Mapped[datetime.datetime] = mapped_column(db.DateTime(timezone=True))
     attempt: Mapped[int] = mapped_column(default=1)
     session: Mapped[int] = mapped_column(default=0)
 
     student_id: Mapped[int] = mapped_column(ForeignKey('student.id'))
     question_id: Mapped[str] = mapped_column(ForeignKey('question.id'))
     
-    def __init__(self, student_id, question_id, answer, seconds, is_correct, attempt=1, session=0):
-        self.student_id = student_id
+    def __init__(self, student_id: int, question_id: str, answer: str, seconds: float, is_correct: bool, date: datetime.datetime, attempt: int=1, session: int=0):
+        self.student_id  = student_id
         self.question_id = question_id
-        self.seconds = seconds
-        self.is_correct = is_correct
-        self.answer = answer
-        self.attempt = attempt
-        self.session = session
+        
+        self.seconds     = seconds
+        self.is_correct  = is_correct
+        self.answer      = answer
+        self.date
+        self.attempt     = attempt
+        self.session     = session
 
     def __repr__(self):
         return f'<Score {self.id}: {self.question_id} - {self.is_correct} - {self.seconds}>'
@@ -38,7 +41,6 @@ class Student(db.Model):
 
     app_id: Mapped[str] = mapped_column(ForeignKey('application.id'), nullable=False)
 
-    aules: Mapped[List['AuleStudentRelationship']] = db.relationship(backref='student', lazy=True)
     scores: Mapped[List['Score']] = db.relationship(backref='student', lazy=True)    
     
     def __init__(self,app_id, name, age):

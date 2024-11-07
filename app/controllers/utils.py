@@ -1,30 +1,29 @@
 import uuid
-from app.models import User
+from marshmallow import Schema, ValidationError
+from app.exceptions import APIValidationError, APINotFoundError, APIAuthError
+
+from flask import request
 from app.extensions import db
-
-def check_user_role(user_id: uuid.UUID, role: str) -> bool:
-    return bool(
-        db.session.scalar(
-            db.select(User).where(User.role == role)
-        )
-    )
-
-def check_id(type, id) -> bool:
+from app.models import User
+def validate_data(schema: Schema):
     try:
-        app = db.session.scalar(db.select(type).where(type.id == id))
-    except Exception:
-        return False
-    
-    if app is None:
-        return False
-    return True
+        data = schema.load(request.get_json())
+    except ValidationError as err:
+        raise APIValidationError(err.messages)
+        
+    return data
 
-def check_user(jwt_identity: dict) -> bool:
-    try:
-        user = db.session.scalar(db.select(User).where(User.id == jwt_identity['id']).where(User.email == jwt_identity['email']))
-    except Exception:
-        return False
+def get_object(type,id: uuid.UUID, message: str):
+    object = db.session.scalar(db.select(type).where(type.id == id))
+
+    if not object:
+        raise APINotFoundError(message)
+
+    return object
+
+def validate_role(user: User,role: str):
+    if user.role.name == "admin":
+        return
     
-    if user is None:
-        return False
-    return True
+    if user.role.name != role:
+        raise APIAuthError("No tienes los permisos necesarios para realizar esta acción") 

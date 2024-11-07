@@ -6,26 +6,28 @@ from typing import List
 
 from app.extensions import db
 class Role(db.Model):
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(db.String(50), nullable=False, unique=True)
+    """Role for give permissions to users"""
+    id: Mapped[int]             = mapped_column(primary_key=True)
+    name: Mapped[str]           = mapped_column(db.String(50), nullable=False, unique=True)
 
-    users: Mapped[List['User']] = db.relationship(secondary='user_roles', backref='roles')
+    users: Mapped[List['User']] = db.relationship(backref='role')
+    
     
     def __init__(self, name):
         self.name = name
 
 class User(db.Model):
-    id:         Mapped[uuid.UUID] = mapped_column(primary_key=True)
-    email:      Mapped[str] = mapped_column(db.String(50), unique=True)
-    password:   Mapped[str] = mapped_column(nullable=False)
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True)
+    email: Mapped[str]    = mapped_column(db.String(50), unique=True)
+    password: Mapped[str] = mapped_column(nullable=False)
     
-    role: Mapped[int] = mapped_column(db.Integer, ForeignKey('role.id'))
+    role_id: Mapped[int]     = mapped_column(db.Integer, ForeignKey('role.id'))
     
-    #aules: Mapped[List['Aule']] = db.relationship(backref='user', lazy=True)
     
-    def __init__(self, email, password):
-        self.id = uuid.uuid4()
+    def __init__(self, email: str, password: str):
+        self.id    = uuid.uuid4()
         self.email = email
+        
         self.set_password(password)
         
     def set_password(self, password):
@@ -33,4 +35,3 @@ class User(db.Model):
         
     def check_password(self, password):
         return check_password_hash(self.password, password)
-    

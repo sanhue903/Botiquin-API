@@ -1,8 +1,10 @@
-from .student_schema import StudentSchema
-from .post_score_schema import PostScoreSchema
-from .get_score_schema import GetScoreSchema
-from .aule_schema import AuleSchema
-from .login_schema import LoginSchema
-from .signup_schema import SignUpSchema
-from .score_schema import ScoreSchema
+from .auth_schemas import SignUpSchema, LogInSchema
 from .post_app_schema import PostAppSchema
+from .student_schema import StudentSchema
+
+__all__ = [
+    'SignUpSchema',
+    'LogInSchema',
+    'PostAppSchema',
+    'StudentSchema'
+]

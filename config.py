@@ -9,14 +9,14 @@ class Config(object):
     DEBUG = False
     
 class ProductionConfig(Config):
+    load_dotenv(os.path.join(BASE_DIR, '.env'))
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     
 class DevelopmentConfig(Config):
-    load_dotenv(os.path.join(BASE_DIR, '.env'))
     DEBUG = True
     SECRET_KEY = 'dev'
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') 
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(BASE_DIR, 'dev.db')
     SWAGGER_URL = '/docs'
     API_URL = '/static/swagger.json'
     SWAGGER_BLUEPRINT = get_swaggerui_blueprint(
