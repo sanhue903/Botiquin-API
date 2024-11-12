@@ -29,6 +29,6 @@ def post_student(app_id: str):
 
     app = get_object(Application, app_id, "Aplicación no encontrada")
 
-    validate_data(StudentSchema())
+    student = validate_data(StudentSchema(partial='app_id'))
     
-    return post_student_view(app.id)
+    return post_student_view(app.id, student)

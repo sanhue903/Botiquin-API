@@ -13,7 +13,7 @@ def validate_data(schema: Schema):
         
     return data
 
-def get_object(type,id: uuid.UUID, message: str):
+def get_object(type,id: uuid.UUID | str | int, message: str):
     object = db.session.scalar(db.select(type).where(type.id == id))
 
     if not object:

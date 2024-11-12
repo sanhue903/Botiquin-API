@@ -7,7 +7,7 @@ from .utils import filter_query, get_items_from_query
 from flask import jsonify
 
 def get_students_view(app_id: str, student_id: int | None):
-    query = db.select(Student)
+    query = db.select(Student).where(Student.app_id == app_id)
 
     if student_id is not None:
         query = query.where(Student.id == student_id)
@@ -22,12 +22,11 @@ def get_students_view(app_id: str, student_id: int | None):
     return jsonify({'students': serialize_items}), 200
     
 
-def post_student_view(app_id: str):
-    data = request.get_json()
-    data['app_id'] = app_id
+def post_student_view(app_id: str, student: Student):
+    student.app_id = app_id
     
-    db.session.add(validated_data)
+    db.session.add(student)
     db.session.commit()
     
-    return jsonify({'student': schema.dump(validated_data)}), 201
+    return jsonify({'student': StudentSchema().dump(student)}), 201
     
