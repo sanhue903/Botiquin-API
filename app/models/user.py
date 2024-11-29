@@ -1,7 +1,7 @@
 import uuid
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, event
 from typing import List
 
 from app.extensions import db
@@ -35,3 +35,10 @@ class User(db.Model):
         
     def check_password(self, password):
         return check_password_hash(self.password, password)
+
+@event.listens_for(Role.__table__, 'after_create')
+def create_departments(*args, **kwargs):
+    db.session.add(Role('default'))
+    db.session.add(Role('admin'))
+    db.session.add(Role('app'))
+    db.session.commit()

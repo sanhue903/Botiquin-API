@@ -13,9 +13,9 @@ def get_students_view(app_id: str, student_id: int | None):
         query = query.where(Student.id == student_id)
     
     else:
-        query = filter_query(query, Student, 'age')
+        query = filter_query(query, Student,'age', 'age')
     
-    items = get_items_from_query(query, page=1, limit=None)
+    items = get_items_from_query(query)
     
     serialize_items = StudentSchema(many=True).dump(items)
     

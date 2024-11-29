@@ -2,20 +2,26 @@ from app.extensions import db
 
 from flask import request
 
-def filter_query(query, model_type, filter : str):
-    equal = request.args.get(filter, None, type=int)
-    low_bound = request.args.get(f'{filter}[gte]', None, type=int)
-    high_bound = request.args.get(f'{filter}[lte]', None, type=int)
+def filter_query(query, model_type, atribute : str, filter: str):
+    if filter.isdecimal():
     
+        equal = request.args.get(filter, None, type=int)
+        low_bound = request.args.get(f'{filter}[gte]', None, type=int)
+        high_bound = request.args.get(f'{filter}[lte]', None, type=int)
+    
+            
+        if low_bound is not None:
+            query = query.where(getattr(model_type, atribute) >= low_bound)
+    
+        if high_bound is not None:
+            query = query.where(getattr(model_type, atribute) <= high_bound)
+        
+    else:
+        equal = request.args.get(filter, None, type=str)
+
     if equal is not None:
-        query = query.where(getattr(model_type, filter) == equal) 
-    
-    if low_bound is not None:
-        query = query.where(getattr(model_type, filter) >= low_bound)
-    
-    if high_bound is not None:
-        query = query.where(getattr(model_type, filter) <= high_bound)
-    
+        query = query.where(getattr(model_type, atribute) == equal) 
+
     return query
 
 def get_items_from_query(query):

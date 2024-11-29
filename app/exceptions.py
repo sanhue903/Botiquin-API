@@ -91,6 +91,7 @@ def handle_not_allowed(err):
     err = APIError(405, "Method not allowed error", "Lo sentimos, el metodo solicitado no esta permitido")
     return handler_error(err)
 
+
 @error_bp.app_errorhandler(500)
 def handle_server_exception(err):
     """Handle server errors"""
@@ -101,6 +102,6 @@ def handler_error(err):
     """Return a custom JSON response"""
     response = {"error": err.description}
     
-    response["messages"] = [arg for arg in err.args if len(arg) > 0]
+    response["messages"] = [arg for arg in err.args if len(arg) > 0] 
         
     return jsonify(response), err.code
