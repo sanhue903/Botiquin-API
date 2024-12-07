@@ -2,6 +2,7 @@ import uuid
 from marshmallow import Schema, ValidationError
 from app.exceptions import APIValidationError, APINotFoundError, APIAuthError
 
+from typing import Union
 from flask import request
 from app.extensions import db
 from app.models import User
@@ -13,7 +14,7 @@ def validate_data(schema: Schema):
         
     return data
 
-def get_object(type,id: uuid.UUID | str | int, message: str):
+def get_object(type,id: Union[uuid.UUID, str, int], message: str):
     object = db.session.scalar(db.select(type).where(type.id == id))
 
     if not object:

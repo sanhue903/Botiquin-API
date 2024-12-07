@@ -5,6 +5,7 @@ from app.schemas import StudentSchema
 from .utils import get_object, validate_role, validate_data
 
 import uuid
+from typing import Optional
 from flask import Blueprint
 from flask_jwt_extended import jwt_required,get_jwt_identity
 
@@ -13,7 +14,7 @@ bp = Blueprint('student', __name__)
 @bp.route('', methods=['GET'])
 @bp.route('/<student_id>', methods=['GET'])
 @jwt_required(locations=['headers'])
-def get_students(app_id: str,student_id: int | None = None):
+def get_students(app_id: str,student_id: Optional[int]= None):
     user_id = uuid.UUID(get_jwt_identity())
     user = get_object(User, user_id, "Usuario no encontrado")
 

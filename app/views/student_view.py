@@ -4,9 +4,10 @@ from app.schemas import StudentSchema
 
 from .utils import filter_query, get_items_from_query
 
+from typing import Optional
 from flask import jsonify
 
-def get_students_view(app_id: str, student_id: int | None):
+def get_students_view(app_id: str, student_id: Optional[int]):
     query = db.select(Student).where(Student.app_id == app_id)
 
     if student_id is not None:

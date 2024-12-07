@@ -8,7 +8,6 @@ def filter_query(query, model_type, atribute : str, filter: str):
         equal = request.args.get(filter, None, type=int)
         low_bound = request.args.get(f'{filter}[gte]', None, type=int)
         high_bound = request.args.get(f'{filter}[lte]', None, type=int)
-    
             
         if low_bound is not None:
             query = query.where(getattr(model_type, atribute) >= low_bound)

@@ -28,6 +28,10 @@ def make_json(chapter_id, scores):
     new_request['chapter']['scores'].append(score) 
     
   return new_request
+
+def count_scores(json):
+    return len(json['scores'])
+    
     
 def test_post_scores(test_client, mock_app_content, mock_student):
   chapter = mock_app_content['app'].chapters[0]
@@ -282,15 +286,9 @@ def test_get_scores(test_client, mock_user, mock_scores):
   
   assert response.status_code == 200
 
-  
+ 
   json = response.get_json()
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
-      
-      
-  print(json)
+  total_scores = count_scores(json)
       
   assert total_scores == len(mock_scores[1])
 
@@ -324,10 +322,7 @@ def test_chapter_filter(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.question.chapter_id == 'TESCH1']
   
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
 
   response = test_client.get(f'/apps/{mock_scores[0]["app"].id}/students/scores?chapter=1', headers=headers)
       
@@ -368,10 +363,7 @@ def test_equal_attempt_filters(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.attempt == 1]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
   
@@ -386,10 +378,7 @@ def test_low_bound_attempt_filters(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.attempt >= 1]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
 
@@ -404,10 +393,7 @@ def test_high_bound_attempt_filters(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.attempt <= 1]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
   
@@ -422,10 +408,7 @@ def test_low_and_high_bound_attempt_filters(test_client, mock_user, mock_scores)
   
   scores =[score for score in mock_scores[1] if score.attempt >= 1 and score.attempt <= 2]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
 
@@ -438,10 +421,7 @@ def test_inversed_low_and_high_bound_attempt_filters(test_client, mock_user, moc
   
   json = response.get_json()
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == 0
 
@@ -456,10 +436,7 @@ def test_equal_session_filters(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.session == 2]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
 
@@ -474,10 +451,7 @@ def test_low_bound_session_filters(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.session >= 2]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
 
@@ -492,10 +466,7 @@ def test_high_bound_session_filters(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.session <= 1]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
   
@@ -510,10 +481,7 @@ def test_low_and_high_bound_session_filters(test_client, mock_user, mock_scores)
   
   scores =[score for score in mock_scores[1] if score.session >= 1 and score.session <= 2]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
 
@@ -526,10 +494,7 @@ def test_inversed_low_and_high_bound_session_filters(test_client, mock_user, moc
   
   json = response.get_json()
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == 0
   
@@ -544,10 +509,7 @@ def test_equal_age_filters(test_client, mock_user, mock_student, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.student.age == mock_student[0].age]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
   
@@ -562,10 +524,7 @@ def test_low_bound_age_filters(test_client, mock_user, mock_student, mock_scores
   
   scores =[score for score in mock_scores[1] if score.student.age >= mock_student[1].age]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
   
@@ -580,10 +539,7 @@ def test_high_bound_age_filters(test_client, mock_user, mock_student, mock_score
   
   scores =[score for score in mock_scores[1] if score.student.age <= mock_student[0].age]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
   
@@ -598,10 +554,7 @@ def test_low_and_high_bound_age_filters(test_client, mock_user, mock_student, mo
   
   scores =[score for score in mock_scores[1] if score.student.age >= mock_student[0].age and score.student.age <= mock_student[1].age]
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == len(scores)
 
@@ -614,9 +567,6 @@ def test_inversed_low_and_high_bound_age_filters(test_client, mock_user, mock_sc
   
   json = response.get_json()
 
-  total_scores = 0
-  for chapter in json['results']:
-    for question in chapter['questions']:
-      total_scores += len(question['scores'])
+  total_scores = count_scores(json)
   
   assert total_scores == 0

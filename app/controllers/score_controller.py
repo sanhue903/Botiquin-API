@@ -5,6 +5,7 @@ from app.exceptions import APINotFoundError
 
 from .utils import get_object, validate_role, validate_data
 
+from typing import Optional
 from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
@@ -15,7 +16,7 @@ bp = Blueprint('score', __name__)
 @bp.route('/scores', methods=['GET'])
 @bp.route('/<student_id>/scores', methods=['GET'])
 @jwt_required(locations=['headers'])
-def get_scores(app_id: str, student_id: int | None = None):
+def get_scores(app_id: str, student_id: Optional[int] = None):
     user_id = uuid.UUID(get_jwt_identity())
     user = get_object(User, user_id, "Usuario no encontrado")
 

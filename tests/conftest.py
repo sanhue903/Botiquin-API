@@ -10,8 +10,6 @@ from flask_jwt_extended import create_access_token
 @pytest.fixture(scope='function') 
 def test_client():
     flask_app = create_app(TestingConfig)
-
-    
     
     with flask_app.test_client() as testing_client:
         with flask_app.app_context():

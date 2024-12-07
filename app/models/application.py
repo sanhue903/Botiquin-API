@@ -11,7 +11,7 @@ class Question(db.Model):
     chapter_id: Mapped[str] = mapped_column(db.String(6), ForeignKey('chapter.id'))
     number: Mapped[int] 
     
-    #scores: Mapped[List['Score']] = db.relationship(backref='question', lazy=True)
+    scores: Mapped[List['Score']] = db.relationship(backref='question', lazy=True)
     
     def __init__(self, id, chapter_id, number, text):
         self.id = id
