@@ -7,13 +7,15 @@ from app.models import User, Application, Chapter, Question, Student, Score, Rol
 from flask_jwt_extended import create_access_token
 
 
-@pytest.fixture(scope='function') 
-def test_client():
+@pytest.fixture(scope='function')
+def app():
     flask_app = create_app(TestingConfig)
+    with flask_app.app_context():
+        yield flask_app
+@pytest.fixture(scope='function') 
+def test_client(app):
     
-    with flask_app.test_client() as testing_client:
-        with flask_app.app_context():
-            
+    with app.test_client() as testing_client:
             yield testing_client
             db.session.close_all()
             db.drop_all()
