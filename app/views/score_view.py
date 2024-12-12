@@ -1,6 +1,7 @@
 from app.models import Score, Student, Chapter, Question, Application
 from app.extensions import db
 from app.exceptions import APINotFoundError
+from sqlalchemy.exc import NoResultFound
 
 from .utils import filter_query, get_items_from_query
 
@@ -36,41 +37,45 @@ def parse_json_get_scores(scores, app, chapter, question):
 
     return {"scores": results}
 
-
 def filter_chapter(query, chapter_id):
     chapter_query = db.select(Chapter)
+    query = query.join(Score.question).join(Question.chapter)
 
     if chapter_id.isdecimal():
-        query = query.join(Chapter).where(Chapter.number == chapter_id)
-        chapter_query = chapter_query.where(Chapter.number == chapter_id)
-
+        chapter_id = int(chapter_id)
+        
+        query = query.filter(Chapter.number == chapter_id)
+        chapter_query = chapter_query.filter(Chapter.number == chapter_id)
     else:
-        query = query.where(Question.chapter_id == chapter_id)
-        chapter_query = chapter_query.where(Chapter.id == chapter_id)
+        query = query.filter(Chapter.id == chapter_id)
+        chapter_query = chapter_query.filter(Chapter.id == chapter_id)
 
-    print(f"chapter query: {chapter_query}")
-    if chapter := db.session.scalar(chapter_query) is None:
-        raise APINotFoundError(f"Capitulo con id o número {chapter_id} no existe")
-
-    return chapter
-
+    try:
+        chapter = db.session.scalars(chapter_query).one()  # Expect exactly one result
+    except NoResultFound:
+        raise APINotFoundError(f"Capítulo con id o número {chapter_id} no existe")
+    
+    return query, chapter
 
 def filter_question(query, question_id):
     question_query = db.select(Question)
 
+    query = query.join(Score.question)
     if question_id.isdecimal():
-        query = query.join(Question)
-
-        query = query.where(Question.number == question_id)
-        question_query = question_query.where(Question.number)
+        question_id = int(question_id)
+        
+        query = query.filter(Question.number == question_id)
+        question_query = question_query.filter(Question.number == question_id)
 
     else:
-        query = query.where(Score.question_id == question_id)
-        question_query = question_query.where(Question.id == question_id)
-    if question := db.session.scalars(question_query) is None:
+        query = query.filter(Question.id == question_id)
+        question_query = question_query.filter(Question.id == question_id)
+    try:    
+        question = db.session.scalars(question_query)
+    except NoResultFound:
         raise APINotFoundError("Capitulo con id o número {question_id} no existe")
 
-    return question.all()
+    return query, question.all()
 
 
 def get_scores_view(app: Application, student_id: Optional[int]):
@@ -84,7 +89,7 @@ def get_scores_view(app: Application, student_id: Optional[int]):
     query = filter_query(query, Student, "age", "age")
 
     chapter_id = request.args.get("chapter", None, type=str)
-    chapter = filter_chapter(query, chapter_id) if chapter_id is not None else None 
+    query, chapter = filter_chapter(query, chapter_id) if chapter_id is not None else None 
 
     question_id = request.args.get("question", None, type=str)
     question = filter_question(query, question_id) if question_id is not None else None
