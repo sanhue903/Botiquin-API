@@ -26,13 +26,13 @@ def test_post_student_unauthorized(test_client, mock_application, mock_user):
     
 def test_post_student_invalid_app(test_client, mock_application):
     headers = {'Authorization': f'Bearer {mock_application["token"]}'}
-    response = test_client.post(f'/apps/OTHER1/students', headers=headers,json=test_student)
+    response = test_client.post('/apps/OTHER1/students', headers=headers,json=test_student)
     
     assert response.status_code == 403
 
 def test_post_student_invalid_app(test_client, mock_application):
     app_id = 'OTHER1'
-    headers = {'Authorization': f'Bearer {create_access_token(identity=app_id)}'}
+    headers = {'Authorization': f'Bearer {mock_application["token"]}'}
     response = test_client.post(f'/apps/{app_id}/students', headers=headers,json=test_student)
     
     assert response.status_code == 404

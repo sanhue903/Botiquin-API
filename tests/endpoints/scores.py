@@ -346,12 +346,11 @@ def test_question_filter(test_client, mock_user, mock_scores):
   
   scores =[score for score in mock_scores[1] if score.question_id == 'TESQ11']
   
-  assert len(json['results'][0]['questions'][0]['scores']) == len(scores)
+  total_scores = count_scores(json)
+
+  assert total_scores == len(scores) 
   
-  response = test_client.get(f'/apps/{mock_scores[0]["app"].id}/students/scores?chapter=TESCH1&question=1', headers=headers)
-
-  assert len(json['results'][0]['questions'][0]['scores']) == len(scores)
-
+    
 def test_equal_attempt_filters(test_client, mock_user, mock_scores):
   headers = make_headers(mock_user['token'])
   

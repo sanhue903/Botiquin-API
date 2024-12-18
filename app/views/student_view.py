@@ -2,7 +2,7 @@ from app.models import Student
 from app.extensions import db
 from app.schemas import StudentSchema
 
-from .utils import filter_query, get_items_from_query
+from .utils import get_less_equal_greater_filters, get_items_from_query
 
 from typing import Optional
 from flask import jsonify
@@ -14,7 +14,7 @@ def get_students_view(app_id: str, student_id: Optional[int]):
         query = query.where(Student.id == student_id)
     
     else:
-        query = filter_query(query, Student,'age', 'age')
+        query = get_less_equal_greater_filters(query, Student,'age')
     
     items = get_items_from_query(query)
     

@@ -3,7 +3,7 @@ from app.extensions import db
 from app.exceptions import APINotFoundError
 from sqlalchemy.exc import NoResultFound
 
-from .utils import filter_query, get_items_from_query
+from .utils import get_less_equal_greater_filters, get_items_from_query
 
 from typing import Optional
 from flask import jsonify, request
@@ -15,7 +15,7 @@ def parse_json_get_scores(scores, app, chapter, question):
     chapters = app.chapters if chapter is None else [chapter]
 
     for chapter_it in chapters:
-        questions = chapter_it.questions if question is None else [question]
+        questions = chapter_it.questions if question is None else question
 
         for question_it in questions:
             for score in scores[:]:
@@ -70,12 +70,12 @@ def filter_question(query, question_id):
     else:
         query = query.filter(Question.id == question_id)
         question_query = question_query.filter(Question.id == question_id)
-    try:    
-        question = db.session.scalars(question_query)
-    except NoResultFound:
+
+    question = db.session.scalars(question_query).all()
+    if len(question) == 0:
         raise APINotFoundError("Capitulo con id o número {question_id} no existe")
 
-    return query, question.all()
+    return query, question
 
 
 def get_scores_view(app: Application, student_id: Optional[int]):
@@ -84,15 +84,15 @@ def get_scores_view(app: Application, student_id: Optional[int]):
     if student_id is not None:
         query = query.where(Score.student_id == student_id)
 
-    query = filter_query(query, Score, "attempt", "attempt")
-    query = filter_query(query, Score, "session", "session")
-    query = filter_query(query, Student, "age", "age")
+    query = get_less_equal_greater_filters(query, Score, "attempt")
+    query = get_less_equal_greater_filters(query, Score, "session")
+    query = get_less_equal_greater_filters(query, Student, "age")
 
     chapter_id = request.args.get("chapter", None, type=str)
-    query, chapter = filter_chapter(query, chapter_id) if chapter_id is not None else None 
+    query, chapter = filter_chapter(query, chapter_id) if chapter_id is not None else (query, None) 
 
     question_id = request.args.get("question", None, type=str)
-    question = filter_question(query, question_id) if question_id is not None else None
+    query, question = filter_question(query, question_id) if question_id is not None else (query, None)
 
     items = get_items_from_query(query)
 
