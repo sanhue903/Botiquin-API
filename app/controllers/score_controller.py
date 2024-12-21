@@ -13,8 +13,8 @@ import uuid
 
 bp = Blueprint('score', __name__)
 
-@bp.route('/scores', methods=['GET'])
-@bp.route('/<student_id>/scores', methods=['GET'])
+@bp.route('/scores/', methods=['GET'])
+@bp.route('/<student_id>/scores/', methods=['GET'])
 @jwt_required(locations=['headers'])
 def get_scores(app_id: str, student_id: Optional[int] = None):
     user_id = uuid.UUID(get_jwt_identity())
@@ -26,7 +26,7 @@ def get_scores(app_id: str, student_id: Optional[int] = None):
 
     return get_scores_view(app, student_id)
 
-@bp.route('/<student_id>/scores', methods=['POST'])
+@bp.route('/<student_id>/scores/', methods=['POST'])
 @jwt_required(locations=['headers'])
 def post_scores(app_id:str, student_id: int):
     user_id = uuid.UUID(get_jwt_identity())

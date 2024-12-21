@@ -1,7 +1,7 @@
 from flask import Flask
 from config import Config, DevelopmentConfig
 
-from app.extensions import db, ma, jwt, migrate
+from app.extensions import db, ma, jwt, migrate, cors
 from .exceptions import error_bp 
 from .controllers import auth_bp, mobile_app_bp, score_bp, student_bp
 
@@ -11,6 +11,7 @@ def create_app(config_class: Config = DevelopmentConfig):
     
     with app.app_context():
         # Initialize extensions
+        cors.init_app(app)
         db.init_app(app)
         ma.init_app(app)
         jwt.init_app(app)

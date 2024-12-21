@@ -9,7 +9,7 @@ from .utils import validate_data
 from flask import Blueprint
 bp = Blueprint('auth', __name__)
 
-@bp.route('/signup', methods=['POST'])
+@bp.route('/signup/', methods=['POST'])
 def sign_up_user():
     data = validate_data(SignUpSchema())
     
@@ -21,7 +21,7 @@ def sign_up_user():
     
     return sign_up_view(data['email'], data['password'])
 
-@bp.route('/login', methods=['POST'])
+@bp.route('/login/', methods=['POST'])
 def log_in():
     data = validate_data(LogInSchema())
     

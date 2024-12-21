@@ -48,3 +48,23 @@ def register_mobile_app_view(data):
                                        expires_delta=False)
 
     return jsonify({'token': access_token}), 201
+
+def get_app_view(app):
+    json = {
+        'id': app.id,
+        'name': app.name,
+        'chapter_count': len(app.chapters),
+        'chapters': [{
+            'id': chapter.id,
+            'number': chapter.number,
+            'name': chapter.name,
+            'question_count': len(chapter.questions),
+            'questions': [{
+                'id': question.id,
+                'number': question.number,
+                'text': question.text
+            } for question in chapter.questions]
+            } for chapter in app.chapters]
+    }
+
+    return jsonify(json), 200

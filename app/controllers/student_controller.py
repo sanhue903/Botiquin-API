@@ -11,8 +11,8 @@ from flask_jwt_extended import jwt_required,get_jwt_identity
 
 bp = Blueprint('student', __name__)
 
-@bp.route('', methods=['GET'])
-@bp.route('/<student_id>', methods=['GET'])
+@bp.route('/', methods=['GET'])
+@bp.route('/<student_id>/', methods=['GET'])
 @jwt_required(locations=['headers'])
 def get_students(app_id: str,student_id: Optional[int]= None):
     user_id = uuid.UUID(get_jwt_identity())
@@ -24,7 +24,7 @@ def get_students(app_id: str,student_id: Optional[int]= None):
     
     return get_students_view(app.id, student_id)
 
-@bp.route('', methods=['POST'])
+@bp.route('/', methods=['POST'])
 @jwt_required(locations=['headers'])
 def post_student(app_id: str):
     user_id = uuid.UUID(get_jwt_identity())
