@@ -1,0 +1,140 @@
+{
+    "id": "BOTIQI",
+    "name": "El Botiquin de las Emociones",
+    "chapters": [
+        {
+            "id": "CONEMO",
+            "number": 1,
+            "name": "Conciencia Emocional",
+            "questions": [
+                {
+                    "id": "CONEM1",
+                    "number": 1,
+                    "text": "¿Que sentia Vicente al ver su perrito herido?"
+                },
+                {
+                    "id": "CONEM2",
+                    "number": 2,
+                    "text": "¿Que sentia Vicente al recibir un regalo?"
+                },
+                {
+                    "id": "CONEM3",
+                    "number": 3,
+                    "text": "¿Que sentia Vicente al regalonear con su familia?"
+                },
+                {
+                    "id": "CONEM4",
+                    "number": 4,
+                    "text": "¿Que sentia Vicente al escuchar pasos en la casa cuando no hay nadie?"
+                },
+                {
+                    "id": "CONEM5",
+                    "number": 5,
+                    "text": "¿Que sentia Vicente cuando le rompieron sus juguetes?"
+                }
+            ]
+        },
+        {
+            "id": "REGEMO",
+            "number": 2,
+            "name": "Regulación Emocional",
+            "questions": [
+                {
+                    "id": "REGEM1",
+                    "number": 1,
+                    "text": "¿Que harias tú si a tu vecina le regalan una bicicleta?"
+                },
+                {
+                    "id": "REGEM2",
+                    "number": 2,
+                    "text": "¿Que harias tú si a tu compañero le va muy bien en una tarea?"
+                },
+                {
+                    "id": "REGEM3",
+                    "number": 3,
+                    "text": "¿Que harias tú si a tu vecino le regalaron una pelota nueva?"
+                },
+                {
+                    "id": "REGEM4",
+                    "number": 4,
+                    "text": "¿Que harias tú si estas muy enfadado o enfadada?"
+                },
+                {
+                    "id": "REGEM5",
+                    "number": 5,
+                    "text": "¿Que harias tú si ves a un niño triste por no ser parte del juego?"
+                }
+            ]
+        },
+        {
+            "id": "AUTE10",
+            "number": 3,
+            "name": "Autonomia Emocional",
+            "questions": [
+                {
+                    "id": "AUTE11",
+                    "number": 1,
+                    "text": "¿Cómo se sentia Jacinta en su primer dia de colegio?"
+                },
+                {
+                    "id": "AUTE12",
+                    "number": 2,
+                    "text": "¿Qué hizo Jacinta al darse cuenta que cambió de color?"
+                },
+                {
+                    "id": "AUTE13",
+                    "number": 3,
+                    "text": "¿Por qué Jacinta decidió mostrar sus colores?"
+                },
+                {
+                    "id": "AUTE14",
+                    "number": 4,
+                    "text": "¿Por qué es importante que Jacinta siga adelante, a pesar de sentirse avergonzada?"
+                },
+                {
+                    "id": "AUTE15",
+                    "number": 5,
+                    "text": "¿Por qué Jacinta hablaba sola frente al espejo cuando sentía que todos se reirían de ella por estar llena de colores?"
+                },
+                {
+                    "id": "AUTE16",
+                    "number": 6,
+                    "text": "¿Qué aprendió Jacinta cuando entró a la sala de clases y vio a todos los demás llenos de color también?"
+                }
+            ]
+        },
+        {
+            "id": "AUTE20",
+            "number": 4,
+            "name": "Autonomia Emocional",
+            "questions": [
+                {
+                    "id": "AUTE21",
+                    "number": 1,
+                    "text": "¿Que partes del cuerpo sientes cuando sientes miedo?"
+                },
+                {
+                    "id": "AUTE22",
+                    "number": 2,
+                    "text": "¿Que partes del cuerpo sientes cuando sientes preocupación?"
+                },
+                {
+                    "id": "AUTE23",
+                    "number": 3,
+                    "text": "¿Que partes del cuerpo sientes cuando sientes valentía?"
+                },
+{
+                    "id": "AUTE24",
+                    "number": 4,
+                    "text": "¿Que partes del cuerpo sientes cuando sientes felicidad?"
+                }
+            ]
+        },
+        {
+            "id": "COMPM1",
+            "number": 5,
+            "name": "Competencia Emocional",
+            "questions": []
+        }
+    ]
+}
