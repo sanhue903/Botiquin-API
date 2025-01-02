@@ -12,3 +12,10 @@ si es linux:
 
 luego instala las dependencias:
 `pip install -r requirements.txt`
+
+por ultimo utiliza postman para registrar un usuario admin:
+- `http://127.0.0.1:5000/auth/signup`
+obten el token del admin:
+- `http://127.0.0.1:5000/auth/login`
+y por ultimo registra la aplicacion del archivo botiquin.json utilizando el token:
+- `http://127.0.0.1:5000/apps/register`
