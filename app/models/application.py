@@ -37,6 +37,7 @@ class Chapter(db.Model):
     app_id: Mapped[str] = mapped_column(db.String(6), ForeignKey('application.id'))
     
     questions: Mapped[List[Question]] = db.relationship(backref='chapter', lazy=True)
+    sessions: Mapped[List['Session']] = db.relationship(backref='chapter', lazy=True)
     
     def __init__(self, id, app_id, number, name):
         self.id = id

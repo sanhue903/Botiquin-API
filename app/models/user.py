@@ -21,7 +21,7 @@ class User(db.Model):
     email: Mapped[str]    = mapped_column(db.String(50), unique=True)
     password: Mapped[str] = mapped_column(nullable=False)
     
-    role_id: Mapped[int]     = mapped_column(db.Integer, ForeignKey('role.id'))
+    role_id: Mapped[int]  = mapped_column(db.Integer, ForeignKey('role.id'))
     
     
     def __init__(self, email: str, password: str):

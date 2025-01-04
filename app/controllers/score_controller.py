@@ -1,6 +1,6 @@
 from app.views import get_scores_view, post_scores_view
-from app.models import User, Application, Student, Chapter
-from app.schemas import PostScoreSchema
+from app.models import User, Application, Student, Chapter, Question
+from app.schemas import PostSessionSchema
 from app.exceptions import APINotFoundError
 
 from .utils import get_object, validate_role, validate_data
@@ -39,11 +39,15 @@ def post_scores(app_id:str, student_id: int):
     if student_id is not None:
         student = get_object(Student, student_id, "Estudiante no encontrado")
 
-    data = validate_data(PostScoreSchema())
+    data = validate_data(PostSessionSchema())
     
-    chapter = get_object(Chapter, data['chapter']['id'], "Capitulo no encontrado")
-    
+    chapter = get_object(Chapter, data['chapter_id'], "Capitulo no encontrado")
     if chapter.id not in [c.id for c in app.chapters]:
         raise APINotFoundError(f'Capitulo con id {chapter.id} no pertenece a la aplicación {app.id}')
-    
-    return post_scores_view(app, chapter, student, data)
+
+    for scores in data['scores']:
+        question = get_object(Question, scores['question_id'], "Pregunta no encontrada")
+        if question.id not in [q.id for q in chapter.questions]:
+            raise APINotFoundError(f'Pregunta con id {question.id} no pertenece al capitulo {chapter.id}')
+       
+    return post_scores_view(chapter, student, data)

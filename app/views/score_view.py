@@ -1,4 +1,4 @@
-from app.models import Score, Student, Chapter, Question, Application
+from app.models import Score, Student, Chapter, Question, Application, Session
 from app.extensions import db
 from app.exceptions import APINotFoundError
 from sqlalchemy.exc import NoResultFound
@@ -99,33 +99,37 @@ def get_scores_view(app: Application, student_id: Optional[int]):
     return jsonify(parse_json_get_scores(items, app, chapter, question)), 200
 
 
-def post_scores_view(app: Application, chapter: Chapter, student: Student, data):
-    if chapter.number > student.last_chapter:
-        student.last_chapter = chapter.number
-    student.session += 1
-
-    for score in data["chapter"]["scores"]:
-        if score["question_id"] not in [q.id for q in chapter.questions]:
-            raise APINotFoundError(
-                f"Pregunta con id {score['question_id']} no encontrado"
-            )
-
-        last_attempt = db.session.scalar(
-            db.select(Score)
-            .where(Score.student_id == student.id)
-            .where(Score.question_id == score["question_id"])
-            .order_by(Score.attempt.desc())
-            .limit(1)
-        )
-
+def post_scores_view(chapter: Chapter, student: Student, data):
+    student.session+=1
+    
+    last_session = db.session.scalar(
+                    db.select(Session)
+                    .where(Session.student_id == student.id)
+                    .where(Session.chapter_id == chapter.id)
+                    .order_by(Session.number.desc())
+                    .limit(1)
+                )
+    
+    session_number = last_session.number + 1 if last_session is not None else 1
+    
+    session = Session(
+                number        = session_number, 
+                seconds       = data['seconds'], 
+                finish_chapter= data['finish_chapter'],
+                date          = data['date'],
+                student_id    = student.id,
+                chapter_id    = chapter.id    
+                )
+    
+    
+    for score in data["scores"]:
         new_score = Score(
             student_id=student.id,
             question_id=score["question_id"],
             answer=score["answer"],
             seconds=score["seconds"],
             is_correct=score["is_correct"],
-            date=score["date"],
-            attempt=last_attempt.attempt + 1 if last_attempt is not None else 1,
+            attempt=score['attempt'],
             session=student.session,
         )
 
