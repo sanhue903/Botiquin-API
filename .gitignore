@@ -3,6 +3,7 @@
 .env
 *.db
 migrations/
+test_client.py
 
 
 # Byte-compiled / optimized / DLL files

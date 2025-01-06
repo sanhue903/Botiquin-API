@@ -6,5 +6,3 @@ class StudentSchema(ma.SQLAlchemyAutoSchema):
         model = Student 
         load_instance = True
         include_fk = True
-
-    

@@ -47,6 +47,7 @@ def post_scores(app_id:str, student_id: int):
 
     for scores in data['scores']:
         question = get_object(Question, scores['question_id'], "Pregunta no encontrada")
+        
         if question.id not in [q.id for q in chapter.questions]:
             raise APINotFoundError(f'Pregunta con id {question.id} no pertenece al capitulo {chapter.id}')
        

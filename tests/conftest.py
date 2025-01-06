@@ -4,7 +4,10 @@ from config import TestingConfig
 
 from app.extensions import db
 from app.models import User, Application, Chapter, Question, Student, Score, Role
+from app.views import post_scores_view
 from flask_jwt_extended import create_access_token
+import datetime
+import random
 
 
 @pytest.fixture(scope='function')
@@ -52,6 +55,42 @@ def mock_application(test_client):
     
 @pytest.fixture(scope='function')
 def mock_app_content(test_client, mock_application):
+    """
+    {
+        id: TESAPP
+        chapters: [
+            {
+                id: TESCH1
+                number: 1
+                questions: [
+                    {
+                        id: TESQ11
+                        number: 1
+                    },
+                    {
+                        id: TESQ12
+                        number: 2
+                    }
+                ]
+            },
+            {
+                id: TESCH2
+                number: 2
+                questions: [
+                    {
+                        id: TESQ21
+                        number: 1
+                    },
+                    {
+                        id: TESQ22
+                        number: 2
+                    },
+                    {
+                        id: TESQ23
+                        number: 3
+                    }
+    ]}]}
+    """
     chapter1 = Chapter(id='TESCH1', app_id=mock_application['app'].id, number=1, name='Test Chapter 1')
     db.session.add(chapter1)
     
@@ -64,9 +103,16 @@ def mock_app_content(test_client, mock_application):
     question1_2 = Question(id='TESQ12', chapter_id=chapter1.id, number=2, text='Test Question 1.2')
     db.session.add(question1_2)
     
+    
     question2_1 = Question(id='TESQ21', chapter_id=chapter2.id, number=1, text='Test Question 2.1')
     db.session.add(question2_1) 
    
+    question2_2 = Question(id='TESQ22', chapter_id=chapter2.id, number=2, text='Test Question 2.2')
+    db.session.add(question2_2) 
+
+    question2_3 = Question(id='TESQ23', chapter_id=chapter2.id, number=3, text='Test Question 2.3')
+    db.session.add(question2_3)
+
     db.session.commit() 
     yield mock_application
     
@@ -82,48 +128,59 @@ def mock_student(test_client, mock_application):
     
     yield [test_student1, test_student2]
     
+def generate_session_data(chapter):
+    data = {
+        "date": datetime.datetime(2025,12,31),
+        "finish_chapter": True,
+        "seconds": 10.5,
+        "scores": []
+    }
+    
+    for question in chapter.questions:
+        attempt = 0
+
+        in_session = True
+        while True:
+            attempt+= 1
+            is_correct = random.choice([True, False])
+            seconds = float(random.randint(10,50))
+            
+            score = {
+                "answer": "a",
+                "seconds": seconds,
+                "is_correct": is_correct,
+                "attempt": attempt,
+                "question_id": question.id
+            }
+            
+            data['scores'].append(score)
+            data['seconds']+= seconds
+            
+            if is_correct:
+                break
+            in_session = random.choices([True, False], weights=[75, 25])[0]
+
+            if not in_session:
+                data['finish_chapter'] = False
+                break
+        
+        if not in_session:
+            break
+                
+    return data
+
+
 @pytest.fixture(scope='function')
 def mock_scores(test_client, mock_app_content, mock_student):
-    chapter1 = mock_app_content['app'].chapters[0]
+    sessions = []
+    for student in mock_student:
+        for chapter in mock_app_content['app'].chapters:
+            data = generate_session_data(chapter)
+            post_scores_view(chapter,student, data)
+            
+            if not data['finish_chapter']:
+                break
+           
+        sessions+= student.sessions 
     
-    question1_1 = chapter1.questions[0]
-    question1_2 = chapter1.questions[1]
-    
-    chapter2 = mock_app_content['app'].chapters[1]
-    question2_1 = chapter2.questions[0]     
-    
-    # First student
-    score1 = Score(student_id=mock_student[0].id, question_id=question1_1.id, answer='wrong', seconds=10.0, is_correct=False, session=1)
-    db.session.add(score1)
-    
-    score2 = Score(student_id=mock_student[0].id, question_id=question1_1.id, answer='correct', seconds=3.7, is_correct=True, attempt=2, session=2)
-    db.session.add(score2)
-    
-    score3 = Score(student_id=mock_student[0].id, question_id=question1_2.id, answer='correct', seconds=5.8, is_correct=True, session=2)
-    db.session.add(score3)
-    
-    score4 = Score(student_id=mock_student[0].id, question_id=question2_1.id, answer='correct', seconds=2.8, is_correct=True, session=2)
-    db.session.add(score4)
-    
-    # Second student
-    score5 = Score(student_id=mock_student[1].id, question_id=question1_1.id, answer='correct', seconds=6.8, is_correct=True, session=1)
-    db.session.add(score5)
-    
-    score6 = Score(student_id=mock_student[1].id, question_id=question1_2.id, answer='wrong', seconds=4.8, is_correct=False, session=1)
-    db.session.add(score6)
-    
-    score7 = Score(student_id=mock_student[1].id, question_id=question1_2.id, answer='correct', seconds=2.8, is_correct=True, attempt=2, session=1)
-    db.session.add(score7)
-    
-    score8 = Score(student_id=mock_student[1].id, question_id=question2_1.id, answer='wrong', seconds=4.8, is_correct=False, session=1)
-    db.session.add(score8)
-    
-    score9 = Score(student_id=mock_student[1].id, question_id=question2_1.id, answer='wrong', seconds=1.8, is_correct=False, attempt=2, session=1)
-    db.session.add(score9)
-    
-    score10 = Score(student_id=mock_student[1].id, question_id=question2_1.id, answer='correct', seconds=2.3, is_correct=True, attempt=3, session=1)
-    db.session.add(score10)
-    
-    db.session.commit()
-    
-    yield mock_app_content, [score1, score2, score3, score4, score5, score6, score7, score8, score9, score10]
+    yield mock_app_content, sessions

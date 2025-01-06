@@ -13,7 +13,7 @@ class InnerScoreSchema(ma.Schema):
 class PostSessionSchema(ma.Schema):
     seconds = fields.Float(required=True)
     finish_chapter = fields.Boolean(required=True)
-    date = fields.DateTime(required=True)
+    date = fields.DateTime('%d-%m-%Y', required=True)
     
     chapter_id = fields.Str(required=True, validate=validate.Length(min=6, max=6))
 

@@ -60,8 +60,6 @@ class Student(db.Model):
     sessions: Mapped[List['Session']] = db.relationship(backref='student', lazy=True)
 
     
-    def __init__(self, name: str, age: int, app_id: str):
+    def __init__(self, name: str, age: int):
         self.name = name    
         self.age  = age
-
-        self.app_id = app_id

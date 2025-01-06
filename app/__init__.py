@@ -9,6 +9,7 @@ def create_app(config_class: Config = DevelopmentConfig):
     app = Flask(__name__)
     app.config.from_object(config_class)
     
+    app.json.sort_keys = False
     with app.app_context():
         # Initialize extensions
         cors.init_app(app)

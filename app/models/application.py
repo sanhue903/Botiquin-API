@@ -60,6 +60,7 @@ class Application(db.Model):
 
 
     chapters: Mapped[List[Chapter]] = db.relationship(backref='application', lazy=True)
+    students: Mapped[List['Student']] = db.relationship(backref='application', lazy=True)
     
     def __init__(self, id, name):
         self.id = id

@@ -7,6 +7,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 class Config(object):
     TESTING = False
     DEBUG = False
+    JSON_SORT_KEYS = False
     
 class ProductionConfig(Config):
     load_dotenv(os.path.join(BASE_DIR, '.env'))

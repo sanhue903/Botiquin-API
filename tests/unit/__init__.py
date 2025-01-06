@@ -1,16 +1,17 @@
-from app.models import Score
+from app.models import Session
 from app.extensions import db
 
 class TestBase:
     def __init__(self):
-        self.query = db.select(Score)    
+        self.query = db.select(Session)    
 
-    def run(self, test_scores, filter = ModuleNotFoundError):
+    def run(self, test_sessions, filter = ModuleNotFoundError):
         items = db.session.scalars(self.query).all()
+        
 
         if filter is not None:
-            scores = [score for score in test_scores if filter(score)]
+            sessions = [session for session in test_sessions if filter(session)]
         else:
-            scores = test_scores
+            sessions = test_sessions
     
-        assert len(items) == len(scores)
+        assert len(items) == len(sessions)
