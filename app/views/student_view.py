@@ -20,7 +20,7 @@ def get_students_view(app_id: str, student_id: Optional[int]):
     
     serialize_items = StudentSchema(many=True).dump(items)
     
-    return jsonify({'students': serialize_items}), 200
+    return jsonify(serialize_items), 200
     
 
 def post_student_view(app_id: str, student: Student):
@@ -29,5 +29,5 @@ def post_student_view(app_id: str, student: Student):
     db.session.add(student)
     db.session.commit()
     
-    return jsonify({'student': StudentSchema().dump(student)}), 201
+    return jsonify(StudentSchema().dump(student)), 201
     
