@@ -1,4 +1,4 @@
-from app.models import User, Application
+from app.models import User, Application, Student
 from app.views import get_students_view, post_student_view
 from app.schemas import StudentSchema
 
@@ -13,7 +13,7 @@ bp = Blueprint('student', __name__)
 
 @bp.route('/', methods=['GET'])
 @bp.route('/<student_id>/', methods=['GET'])
-@jwt_required(locations=['headers'])
+@jwt_required()
 def get_students(app_id: str,student_id: Optional[int]= None):
     user_id = uuid.UUID(get_jwt_identity())
     user = get_object(User, user_id, "Usuario no encontrado")
@@ -21,6 +21,9 @@ def get_students(app_id: str,student_id: Optional[int]= None):
     validate_role(user, "default")
     
     app = get_object(Application, app_id, "Aplicación no encontrada")
+
+    if student_id is not None:
+        get_object(Student, student_id, "Estudiante no encontrado")
     
     return get_students_view(app.id, student_id)
 

@@ -1,10 +1,13 @@
-from app.views import sign_up_view, log_in_view
+from app.views import sign_up_view, log_in_view, log_out_view, profile_view
 from app.models import User
 from app.schemas import SignUpSchema, LogInSchema
 from app.extensions import db
 from app.exceptions import APIConflictError, APINotFoundError, APIUnauthorizedError
 
-from .utils import validate_data
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import uuid
+
+from .utils import validate_data, get_object
 
 from flask import Blueprint
 bp = Blueprint('auth', __name__)
@@ -36,3 +39,16 @@ def log_in():
     
     
     return log_in_view(user)
+
+
+@bp.route('/logout/', methods=['GET'])
+def log_out():
+    return log_out_view()
+
+@bp.route('/profile/', methods=['GET'])
+@jwt_required()
+def get_profile():
+    user_id = uuid.UUID(get_jwt_identity())
+    user = get_object(User, user_id, "Usuario no encontrado")
+    
+    return profile_view(user)

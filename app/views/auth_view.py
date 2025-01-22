@@ -1,7 +1,7 @@
 from app.models import User, Role
 from app.extensions import db
 from flask import jsonify, abort
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, set_access_cookies, unset_jwt_cookies
 from datetime import timedelta
 
 def sign_up_view(email: str, password: str):
@@ -23,5 +23,18 @@ def sign_up_view(email: str, password: str):
 def log_in_view(user: User):
     access_token = create_access_token(identity=user.id,
                                        expires_delta=timedelta(days=365))
+    
+    response = jsonify({"message": "login successful"})
+    set_access_cookies(response, access_token)
+    
+    return response, 201
 
-    return jsonify({"token": access_token}), 201
+def log_out_view():
+    response = jsonify({"message": "logout successful"})
+    unset_jwt_cookies(response)
+    
+    return response, 201
+
+def profile_view(user):
+    return jsonify({"email": user.email, "role": user.role.name}), 200
+    

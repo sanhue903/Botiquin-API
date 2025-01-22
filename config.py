@@ -8,11 +8,13 @@ class Config(object):
     TESTING = False
     DEBUG = False
     JSON_SORT_KEYS = False
+    JWT_TOKEN_LOCATION = ['cookies', 'headers']
     
 class ProductionConfig(Config):
     load_dotenv(os.path.join(BASE_DIR, '.env'))
     SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+    JWT_COOKIE_SECURE = True
     
 class DevelopmentConfig(Config):
     DEBUG = True

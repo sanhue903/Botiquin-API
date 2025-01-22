@@ -11,7 +11,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 bp = Blueprint('mobile', __name__)
 
 @bp.route('/register/', methods=['POST'])
-@jwt_required(locations=['headers'])
+@jwt_required()
 def register_mobile_app():
     user_id = uuid.UUID(get_jwt_identity())
     user = get_object(User, user_id, "Usuario no encontrado")
@@ -24,7 +24,7 @@ def register_mobile_app():
     return register_mobile_app_view(data)
 
 @bp.route('/<app_id>/', methods=['GET'])
-@jwt_required(locations=['headers'])
+@jwt_required()
 def get_app(app_id):
     user_id = uuid.UUID(get_jwt_identity())
     user = get_object(User, user_id, "Usuario no encontrado")

@@ -82,7 +82,7 @@ def get_scores_view(app: Application, student_id: Optional[int]):
     chapter_id = request.args.get("chapter", None, type=str)
     query = filter_chapter(query, chapter_id) 
 
-    items = get_items_from_query(query)
+    items = db.session.scalars(query).all()
 
     return jsonify(parse_json_get_scores(items)), 200
 

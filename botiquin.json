@@ -106,7 +106,7 @@
         {
             "id": "AUTE20",
             "number": 4,
-            "name": "Autonomia Emocional",
+            "name": "Pinta Emociones",
             "questions": [
                 {
                     "id": "AUTE21",
@@ -129,12 +129,6 @@
                     "text": "¿Que partes del cuerpo sientes cuando sientes felicidad?"
                 }
             ]
-        },
-        {
-            "id": "COMPM1",
-            "number": 5,
-            "name": "Competencia Emocional",
-            "questions": []
         }
     ]
 }

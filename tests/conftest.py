@@ -128,23 +128,32 @@ def mock_student(test_client, mock_application):
     
     yield [test_student1, test_student2]
     
+import datetime
+import random
+
 def generate_session_data(chapter):
     data = {
-        "date": datetime.datetime(2025,12,31),
+        "date": datetime.datetime(2025, 12, 31),
         "finish_chapter": True,
         "seconds": 10.5,
         "scores": []
     }
-    
+
     for question in chapter.questions:
         attempt = 0
-
         in_session = True
+
         while True:
-            attempt+= 1
-            is_correct = random.choice([True, False])
-            seconds = float(random.randint(10,50))
-            
+            attempt += 1
+
+            # Probabilidades actualizadas
+            if chapter.number == 2:
+                is_correct = random.choices([True, False], weights=[60, 40])[0]  # 60% de aciertos en capítulo 2
+                seconds = float(random.randint(20, 60))  # Tiempo más alto en capítulo 2
+            else:
+                is_correct = random.choices([True, False], weights=[85, 15])[0]  # 85% de aciertos en general
+                seconds = float(random.randint(5, 30))  # Tiempo más bajo en otros capítulos
+
             score = {
                 "answer": "a",
                 "seconds": seconds,
@@ -152,23 +161,27 @@ def generate_session_data(chapter):
                 "attempt": attempt,
                 "question_id": question.id
             }
-            
+
             data['scores'].append(score)
-            data['seconds']+= seconds
-            
+            data['seconds'] += seconds
+
             if is_correct:
-                break
-            in_session = random.choices([True, False], weights=[75, 25])[0]
+                break  # Si responde bien, pasa a la siguiente pregunta
+
+            # Probabilidad de abandonar antes de terminar
+            if chapter.number == 2:
+                in_session = random.choices([True, False], weights=[80, 20])[0]  # 20% de probabilidad de abandono en capítulo 2
+            else:
+                in_session = random.choices([True, False], weights=[90, 10])[0]  # 10% de abandono en otros capítulos
 
             if not in_session:
                 data['finish_chapter'] = False
-                break
-        
-        if not in_session:
-            break
-                
-    return data
+                break  # Termina la sesión si abandona
 
+        if not in_session:
+            break  # Si se abandona, no sigue con más preguntas
+
+    return data
 
 @pytest.fixture(scope='function')
 def mock_scores(test_client, mock_app_content, mock_student):
