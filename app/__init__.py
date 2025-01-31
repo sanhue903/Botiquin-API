@@ -3,7 +3,7 @@ from config import Config, DevelopmentConfig
 
 from app.extensions import db, ma, jwt, migrate, cors
 from .exceptions import error_bp 
-from .controllers import auth_bp, mobile_app_bp, score_bp, student_bp
+from .controllers import auth_bp, mobile_app_bp, score_bp, student_bp, main_bp
 
 def create_app(config_class: Config = DevelopmentConfig):
     app = Flask(__name__)
@@ -24,6 +24,7 @@ def create_app(config_class: Config = DevelopmentConfig):
         
         # Register blueprints
         app.register_blueprint(error_bp)
+        app.register_blueprint(main_bp)
         app.register_blueprint(auth_bp, url_prefix='/auth')
         app.register_blueprint(mobile_app_bp, url_prefix='/apps')
         app.register_blueprint(score_bp, url_prefix='/apps/<app_id>/students')
