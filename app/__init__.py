@@ -12,7 +12,7 @@ def create_app(config_class: Config = DevelopmentConfig):
     app.json.sort_keys = False
     with app.app_context():
         # Initialize extensions
-        cors.init_app(app, supports_credentials=True, origins=['http://127.0.0.1:3000', 'http://localhost:3000'])
+        cors.init_app(app, supports_credentials=True, resources={r"/api/*": {"origins": "https://elbotiquin.misoporte.cl"}})
 
         db.init_app(app)
         ma.init_app(app)
