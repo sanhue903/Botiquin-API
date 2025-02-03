@@ -9,6 +9,7 @@ class Config(object):
     DEBUG = False
     JSON_SORT_KEYS = False
     JWT_TOKEN_LOCATION = ['cookies', 'headers']
+    JWT_COOKIE_SECURE = "None"
     
 class ProductionConfig(Config):
     load_dotenv(os.path.join(BASE_DIR, '.env'))
