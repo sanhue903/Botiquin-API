@@ -30,7 +30,7 @@ def get_scores(app_id: str, student_id: Optional[int] = None):
     return get_scores_view(app, student_id)
 
 @bp.route('/<student_id>/scores/', methods=['POST'])
-@jwt_required(locations=['headers   '])
+@jwt_required(locations=['headers'])
 def post_scores(app_id:str, student_id: int):
     user_id = uuid.UUID(get_jwt_identity())
     user = get_object(User, user_id, "Usuario no encontrado")
